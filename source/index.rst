@@ -1,15 +1,15 @@
-
-.. OpenStack vs. Ganeti slides file, created by
-   hieroglyph-quickstart on Sat Aug  8 11:33:30 2015.
-
-
 OpenStack vs. Ganeti
 ====================
 
-Contents:
+* Lance Albertson
+* Director, OSU Open Source Lab
+* @ramereth
 
-.. toctree::
-   :maxdepth: 2
+Questions?
+----------
 
-
-
+* Lance Albertson
+* lance@osuosl.org
+* @ramereth
+* http://osuosl.org
+* http://lancealbertson.com
