@@ -40,7 +40,7 @@ project and community is evolving and how to deploy it into your infrastructure.
 Outline
 -------
 
-* Cloud vs. IaaS
+* Compute needs of today
 * Openstack Review
 * Ganeti Introduction
 * Ganeti walk-through
