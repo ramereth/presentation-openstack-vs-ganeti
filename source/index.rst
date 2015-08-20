@@ -6,12 +6,27 @@ OpenStack vs. Ganeti
 * http://osuosl.org
 * @ramereth
 
+*Attribution-ShareAlike CC BY-SA ©2015*
+
 Session Overview
 ----------------
 * OpenStack quick overview
 * Ganeti overview
 * Ganeti walk-through
 * Comparing both
+
+About me
+--------
+* Lance Albertson
+* Director, OSU Open Source Lab (OSUOSL)
+
+  * Provide infrastructure hosting for FOSS projects
+  * Linux Foundation, Python Software Foundation, Drupal, etc
+
+* Ops guy
+* Ganeti user since 2009
+* OpenStack user since 2013
+* http://osuosl.org
 
 Virtualized Computing Resources
 --------------------------------
@@ -25,13 +40,14 @@ Typical Solutions
 * VMWare
 * VirtualBox
 * OpenStack
-* ???
+* [insert favorite solution]
 
 OpenStack is all the hype
 -------------------------
 * Designed to scale and be an AWS replacement (almost)
 * Everyone is investing in it
 * Still maturing as a project
+* Includes a wide-array of features, many of which most people don't need
 
 OpenStack Overview
 ------------------
@@ -83,20 +99,22 @@ Project Background
 * Used widely internally at Google
 * Active community, mailing list and IRC
 * Started before libvirt/OpenStack
+* Primarily written in Python / Haskell
+* No central relational database
 * GanetiCon - Sept 15-17, 2015 - Prague (third developer summit)
 
 Ganeti Goals
 ------------
-1. Low Entry Level
+**Low Entry Level**
 
   - Easy to install, manage and upgrade
   - Architecture is fairly easy to understand
 
-2. Enterprise Scale
+**Enterprise Scale**
 
   - Manage 1 to 200 within a single cluster
 
-3. Open Source Citizen
+**Open Source Citizen**
 
   - Design and code discussions are open to the community
   - Welcome third-party projects
@@ -345,9 +363,11 @@ Final Summary
 
 Questions?
 ----------
-
 * Lance Albertson
 * lance@osuosl.org
 * @ramereth
 * http://osuosl.org
+* http://www.ganeti.org/
 * http://lancealbertson.com
+
+*Attribution-ShareAlike CC BY-SA ©2015*
