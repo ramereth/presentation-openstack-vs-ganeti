@@ -6,14 +6,7 @@ OpenStack vs. Ganeti
 * http://osuosl.org
 * @ramereth
 
-*Attribution-ShareAlike CC BY-SA ©2015*
-
-Session Overview
-----------------
-* OpenStack quick overview
-* Ganeti overview
-* Ganeti walk-through
-* Comparing both
+*Attribution-ShareAlike CC BY-SA ©2015-2016*
 
 About me
 --------
@@ -28,8 +21,16 @@ About me
 * OpenStack user since 2013
 * http://osuosl.org
 
-Virtualized Computing Resources
---------------------------------
+Session Overview
+----------------
+* Cloud computing overview
+* OpenStack quick overview
+* Ganeti overview
+* Ganeti walk-through
+* Comparing both
+
+Cloud Computing Resources
+-------------------------
 * Each organization has different needs
 * Some are small and simple
 * Others are more complex and larger
@@ -38,9 +39,19 @@ Virtualized Computing Resources
 Typical Solutions
 -----------------
 * VMWare
-* VirtualBox
+* oVirt
+* Apache CloudStack
 * OpenStack
+* Public cloud (AWS, Linode, etc)
 * [insert favorite solution]
+
+Cloud Computing Use Case
+------------------------
+* Small web infrastructure
+* Highly dynamic micro-services based
+* Build & Testing compute resources
+* Long running vms vs. short lived vms
+* Users of the system
 
 OpenStack is all the hype
 -------------------------
@@ -48,6 +59,7 @@ OpenStack is all the hype
 * Everyone is investing in it
 * Still maturing as a project
 * Includes a wide-array of features, many of which most people don't need
+  initially
 
 OpenStack Overview
 ------------------
@@ -61,26 +73,28 @@ OpenStack Pros
 * Fast VM deployment and tear down
 * Very elastic computing needs
 * Large community support
-* Fast growing and new features constantly
+* Quickly growing and new features added frequently
 
 OpenStack Cons
 --------------
 * Extremely difficult to deploy and maintain
 * Lots of moving parts
-* Project is still maturing and unstable
-* Fits a very specific use-case (Cloud)
-* Requires more than one machine to effectively use
+* Project is still maturing and unstable in some areas
+* Fits a somewhat very specific use-case
+* Requires more than one machine to use effectively
+* Upgrades are ... a pain
 
 So what about Ganeti?
 =====================
 
-First, what is Ganeti?
-----------------------
+First off, what is Ganeti?
+--------------------------
 * Cluster management tool for virtual compute resources
 * IaaS solution that uses either KVM or Xen hypervisors
 * Provides fast and simple recovery from hardware failures
 * Primarily CLI driven, sysadmin focused
 * Supports live migration cluster re-balancing
+* Uses a simple architecture with minimal moving parts
 
 What isn't Ganeti?
 -------------------
@@ -97,11 +111,11 @@ Project Background
 ------------------
 * Google funded project
 * Used widely internally at Google
-* Active community, mailing list and IRC
+* Active an welcoming community, mailing list and IRC
 * Started before libvirt/OpenStack
 * Primarily written in Python / Haskell
 * No central relational database
-* GanetiCon - Sept 15-17, 2015 - Prague (third developer summit)
+* Annual GanetiCon
 
 Ganeti Goals
 ------------
@@ -128,13 +142,40 @@ Architecture
 * Nodes can be split up into logical groups
 * Instances (guests) run on nodes
 
+Ganeti Design
+-------------
+
+.. image:: _static/ganeti-architecture.png
+  :width: 80%
+  :align: center
+
+Ganeti Daemons
+--------------
+
+.. csv-table::
+  :widths: 5,10
+
+  ``ganeti-noded``, "Controls the manipulation of this node’s hardware
+  resources; it runs on all nodes which are in a cluster"
+  ``ganeti-confd``, "Daemon used to answer queries related to the configuration
+  of a Ganeti cluster. Runs on all nodes, but is only functional on master
+  candidate nodes"
+  ``ganeti-rapi``, "Daemon which runs on the master node and offers an
+  HTTP-based API for the cluster"
+  ``ganeti-masterd``, "Daemon which runs on the master node and allows control
+  of the clusterdaemon which runs on the master node and allows control of the
+  cluster"
+
 Ganeti Terminology
 ------------------
-:Node: Virtualization host
-:Instance: Virtual Machine Guest
-:Cluster: Set of nodes, managed as a collective
-:Node Group: homogeneous set of nodes (i.e. rack of nodes)
-:Job: Ganeti operation
+.. csv-table::
+  :widths: 5,10
+
+  **Node**, Virtualization host
+  **Instance**, Virtual Machine Guest
+  **Cluster**, "Set of nodes, managed as a collective"
+  **Node Group**, "homogeneous set of nodes (i.e. rack of nodes)"
+  **Job**, Ganeti operation
 
 Storage in Ganeti
 -----------------
@@ -144,6 +185,14 @@ Storage in Ganeti
 * File (both local and shared via NFS)
 * External storage provider for SAN's
 * Designed to be flexible
+
+Deploying instances on Ganeti
+-----------------------------
+* Basically uses bash scripts to install the OS on the block device
+* Image based via ganeti-instance-image or snf-image
+* Other OS providers that use tools such as debootstrap for Debian-based hosts
+* Storage backend of the VM makes things a little complicated
+* No cloud-init support (but I've added simple support in instance-image)
 
 Primary & Secondary Concepts
 -----------------------------
@@ -159,7 +208,7 @@ Ganeti Walk-through
 
 .. rst-class:: codeblock-sm
 
-::
+.. code-block:: console
 
   root@node1:~# gnt-node list
   Node              DTotal DFree MTotal MNode MFree Pinst Sinst
@@ -189,7 +238,7 @@ Ganeti Walk-through (Instance Info)
 
 .. rst-class:: codeblock-sm
 
-::
+.. code-block:: console
 
   root@node1:~# gnt-instance info instance1
   Instance name: instance1.example.org
@@ -223,7 +272,7 @@ Ganeti Walk-through (Converting disk template)
 
 .. rst-class:: codeblock-sm
 
-::
+.. code-block:: console
 
   root@node1:~# gnt-instance shutdown instance1
   Waiting for job 11 for instance1.example.org ...
@@ -247,7 +296,7 @@ Ganeti Walk-through (Live migration)
 
 .. rst-class:: codeblock-sm
 
-::
+.. code-block:: console
 
   root@node1:~# gnt-instance start instance1
   Waiting for job 14 for instance1.example.org …
@@ -290,10 +339,11 @@ Ganeti Cons
 * No GUI frontend by default (third party projects do have some)
 * API isn't very cloud compatible
 * API not intended to be open to general users of the platform
-* Management becomes slower the larger the cluster gets (although, its improving)
+* Management becomes slower the larger the cluster gets (although, its
+  improving)
 
-Ganeti + Synnefo = OpenStack-ish
---------------------------------
+Ganeti + Synnefo = Ganeti+OpenStack APIs
+----------------------------------------
 
 *Synnefo is a complete open source IaaS cloud stack written in Python that
 provides Compute, Network, Image, Volume and Object Storage services*
@@ -310,6 +360,37 @@ Synnefo Architecture
 
 .. image:: _static/snf-architecture.png
   :width: 100%
+
+Synnefo Components
+------------------
+.. csv-table::
+
+  **Astakos**, Identity/Account/Quota services
+  **Pithos**, Object Storage service
+  **Cyclades**, Compute/Network/Image/Volume services
+  **kamaki**, Command-line client
+  **Synnefo Web UI**, Django web frontend
+
+Synnefo Detailed Architecture
+-----------------------------
+
+.. image:: _static/synnefo-detailed-arch.png
+  :width: 80%
+  :align: center
+
+Synnefo Screenshots
+-------------------
+
+.. image:: _static/snf-vms_actions.jpg
+  :width: 100%
+  :align: center
+
+Synnefo Screenshots
+-------------------
+
+.. image:: _static/snf-networks.jpg
+  :width: 90%
+  :align: center
 
 How the OSL is using Ganeti
 ---------------------------
@@ -350,7 +431,7 @@ Future plans
 ------------
 * Open up OpenStack cluster to our hosted projects later this year
 * Continue using Ganeti along-side OpenStack
-* Research using ManageIQ as an interface between both
+* Research using Synnefo as an interface between both
 * Continue supporting both platforms long term
 
 Final Summary
@@ -359,6 +440,7 @@ Final Summary
 * OpenStack will eventually mature and become more stable
 * Give Ganeti a look, might be what you're looking for if OpenStack is too
   complicated
+* Synnefo expands Ganeti to be more like OpenStack
 * Make sure you experiment with both and fully understand their maintenence needs
 
 Questions?
@@ -369,5 +451,6 @@ Questions?
 * http://osuosl.org
 * http://www.ganeti.org/
 * http://lancealbertson.com
+* We're hiring! http://osl.io/sysadmin2016
 
-*Attribution-ShareAlike CC BY-SA ©2015*
+*Attribution-ShareAlike CC BY-SA ©2015-2016*
