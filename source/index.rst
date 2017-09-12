@@ -3,13 +3,13 @@
   :subtitle: Lance Albertson
   :subtitle-heading: h4
 
-  Director, OSU Open Source Lab
+  Director, Oregon State University Open Source Lab
 
   http://osuosl.org
 
-  @ramereth
+  @ramereth @osuosl
 
-  *Attribution-ShareAlike CC BY-SA ©2015*
+  *Attribution-ShareAlike CC BY-SA ©2015-2017*
 
 .. revealjs::
 
@@ -18,7 +18,7 @@
     * OpenStack quick overview
     * Ganeti overview
     * Ganeti walk-through
-    * Comparing both
+    * Comparing OpenStack vs. Ganeti
 
   .. revealjs:: About me
 
@@ -33,17 +33,18 @@
     * OpenStack user since 2013
     * http://osuosl.org
 
-  .. revealjs:: Virtualized Computing Resources
+  .. revealjs:: Private Cloud Considerations
 
-    * Each organization has different needs
+    * Each organization has different requirements
     * Some are small and simple
     * Others are more complex and larger
     * Cost is also a major factor (both in licenses and staff maintenance)
+    * High availability vs. Ephemeral resources
+    * Integration with current hardware
 
-  .. revealjs:: Typical Solutions
+  .. revealjs:: Typical Private Cloud Solutions
 
     * VMWare
-    * VirtualBox
     * OpenStack
     * [insert favorite solution]
 
@@ -51,12 +52,12 @@
 
 .. revealjs::
 
-  .. revealjs:: OpenStack is all the hype
+  .. revealjs:: OpenStack Popularity
 
-    * Designed to scale and be an AWS replacement (almost)
-    * Everyone is investing in it
-    * Still maturing as a project
-    * Includes a wide-array of features, many of which most people don't need
+    * Designed to scale and function similar to AWS
+    * Many companies are investing in it
+    * The project itself is very large and is still maturing
+    * Includes a wide-array of features and optional components
 
   .. revealjs:: OpenStack Architecture Overview
 
@@ -67,17 +68,19 @@
 
     * Standard Cloud API
     * Fast VM deployment and tear down
-    * Very elastic computing needs
+    * Excellent for elastic computing needs
     * Large community support
-    * Fast growing and new features constantly
+    * Quickly growing and adding new features constantly
 
   .. revealjs:: OpenStack Cons
 
     * Extremely difficult to deploy and maintain
-    * Lots of moving parts
+    * Lots of moving parts to get it running
     * Project is still maturing and unstable
-    * Fits a very specific use-case (Cloud)
-    * Requires more than one machine to effectively use
+    * Not an ideal solution for small to medium sized organizations
+    * Requires several administrative machines to use effectively
+    * HA is possible but takes a lot of work
+    * Until recently, upgrades are very difficult
 
 .. revealjs::  So what about Ganeti?
 
@@ -88,45 +91,57 @@
     * Cluster management tool for virtual compute resources
     * IaaS solution that uses either KVM or Xen hypervisors
     * Provides fast and simple recovery from hardware failures
+    * N+1 redundancy built into Ganeti for VM resources
     * Primarily CLI driven, sysadmin focused
-    * Supports live migration cluster re-balancing
-
-  .. revealjs:: What isn't Ganeti?
-
-    * Not an entire cloud-platform by itself (primarily only provides compute)
-    * Doesn't provide object/image storage by default
-    * Not meant to be directly interfaced with users
+    * Supports live migration
+    * Cluster re-balancing
 
   .. revealjs:: Ganeti Architecture Overview
 
     .. image:: _static/overview.svg
         :width: 100%
 
+    * Comprised of several daemons running on each node
+    * One node is marked as a master which can be easily migrated
+    * Configuration is replicated to all master-capable nodes and uses flat files
+
   .. revealjs:: Project Background
 
-    * Google funded project
-    * Used widely internally at Google
+    * Open Sourced in 2007 from an internal Google project
+    * Used widely internally at Google for back-office needs
     * Active community, mailing list and IRC
-    * Started before libvirt/OpenStack
+    * Started before libvirt/OpenStack existed
+    * New releases every 6-9 months
     * Primarily written in Python / Haskell
-    * No central relational database
-    * GanetiCon - Sept 15-17, 2015 - Prague (third developer summit)
+    * Recently migrated to Github (http://github.com/ganeti/ganeti)
 
   .. revealjs:: Ganeti Goals
 
+    .. rst-class:: fragment
+
     **Low Entry Level**
 
-      - Easy to install, manage and upgrade
-      - Architecture is fairly easy to understand
+    .. rst-class:: fragment
+
+    * Easy to install, manage and upgrade
+    * Architecture is fairly easy to understand
+
+    .. rst-class:: fragment
 
     **Enterprise Scale**
 
-      - Manage 1 to 200 within a single cluster
+    .. rst-class:: fragment
+
+    * Manage 1 to 200 within a single cluster
+
+    .. rst-class:: fragment
 
     **Open Source Citizen**
 
-      - Design and code discussions are open to the community
-      - Welcome third-party projects
+    .. rst-class:: fragment
+
+    * Design and code discussions are open to the community
+    * Welcome third-party projects
 
 .. revealjs:: Architecture
 
@@ -143,19 +158,26 @@
 
   .. revealjs:: Ganeti Terminology
 
-    :Node: Virtualization host
-    :Instance: Virtual Machine Guest
-    :Cluster: Set of nodes, managed as a collective
-    :Node Group: homogeneous set of nodes (i.e. rack of nodes)
-    :Job: Ganeti operation
+    .. csv-table::
+      :header: Term, Definition
+      :widths: 5, 15
+
+      Node, Virtualization host
+      Instance, Virtual Machine Guest
+      Cluster, "Set of nodes, managed as a collective"
+      Node Group, homogeneous set of nodes (i.e. rack of nodes)
+      Job, Ganeti operation
 
   .. revealjs:: Storage in Ganeti
 
-    * Disk templates
+    * Known as disk templates
     * LVM, DRBD
-    * RBD
+    * RBD (Ceph)
     * File (both local and shared via NFS)
-    * External storage provider for SAN's
+    * External storage provider
+
+      * Useful to interface with existing storage appliances
+
     * Designed to be flexible
 
   .. revealjs:: Primary & Secondary Concepts
@@ -169,7 +191,7 @@
 
 .. revealjs:: Ganeti Walk-through
 
-  .. revealjs::
+  .. revealjs:: Listing Nodes
 
     .. rv_code::
 
@@ -178,6 +200,8 @@
       node1.example.org  26.0G 25.5G   744M  186M  587M     0     0
       node2.example.org  26.0G 25.5G   744M  116M  650M     0     0
 
+    Listing OS images
+
     .. rv_code::
 
       root@node1:~# gnt-os list
@@ -185,7 +209,7 @@
       image+cirros
       image+default
 
-  .. revealjs::
+  .. revealjs:: Creating a new VM
 
     .. rv_code::
 
@@ -204,7 +228,7 @@
       Instance              Hypervisor OS           Primary_node      Status     Memory
       instance1.example.org kvm        image+cirros node1.example.org ADMIN_down      -
 
-  .. revealjs:: Instance Info
+  .. revealjs:: Displaying VM information
 
     .. rv_code::
 
@@ -279,7 +303,44 @@
       Thu Jun  7 06:10:46 2015 * wait until resync is done
       Thu Jun  7 06:10:46 2015 * done
 
+  .. revealjs:: Cluster rebalancing
+
+   * Ability to rebalance CPU, memory and storage across the nodes
+   * Useful when adding or removing nodes
+   * Initiated using the ``hbal`` command
+
+   .. rv_code::
+
+      $ hbal -L -q
+      Loaded 8 nodes, 130 instances
+      Group size 8 nodes, 130 instances
+      Selected node group: default
+      Cluster is not N+1 happy, continuing but no guarantee that the cluster will end N+1 happy.
+      Initial score: 59.58075308
+      Trying to minimize the CV...
+          1. instance1.osuosl.org  gprod3:gprod8 => gprod3:gprod4  58.23987138 a=r:gprod4
+          2. instance2.osuosl.org  gprod3:gprod8 => gprod3:gprod4  56.95979668 a=r:gprod4
+          3. instance3.osuosl.org  gprod3:gprod8 => gprod3:gprod4  55.75769557 a=r:gprod4
+          4. instance4.osuosl.org  gprod2:gprod8 => gprod2:gprod4  54.65118990 a=r:gprod4
+      Cluster score improved from 59.58075308 to 54.65118990
+
+  .. revealjs:: Misc
+
+    .. raw:: html
+
+      <ul>
+      <li class="fragment">Network Management</li>
+      <li class="fragment">Storage integration</li>
+      <li class="fragment">Linux-HA Support</li>
+      <li class="fragment">Auto Repair VMs</li>
+      <li class="fragment">Hotplug (NIC or Disks)</li>
+      <li class="fragment">Open vSwitch support</li>
+      <li class="fragment">Hsqueeze (automatically drain and power down nodes)</li>
+      </ul>
+
 .. revealjs:: Comparing Openstack to Ganeti
+
+.. revealjs::
 
   .. revealjs:: Common Use Cases for Ganeti
 
@@ -296,14 +357,18 @@
     * Scales well for small/medium organization needs
     * Highly customizable backend
     * Built-in redundancy
+    * Upgrades are easy and quick
     * It just works!
 
   .. revealjs:: Ganeti Cons
 
-    * No GUI frontend by default (third party projects do have some)
+    * No GUI frontend by default (third party projects exist)
     * API isn't very cloud compatible
     * API not intended to be open to general users of the platform
     * Management becomes slower the larger the cluster gets (although, its improving)
+    * Deploying VMs can be slower than compared to OpenStack
+    * VM image support is lacking but helped with ganeti-instance-image
+    * Doesn't scale as well as OpenStack
 
   .. revealjs:: Ganeti + Synnefo = OpenStack-ish
 
@@ -324,61 +389,78 @@
 
   .. revealjs:: How the OSL is using Ganeti
 
-    * Hosting all of the "Pet" VMs we still need
+    * Hosting all of the production VMs which power our infrastructure
     * Project specific VM(s)
-    * Mix of shared web infrastructure (load balancers, web frontends, backend
-      services)
-    * OpenStack controller node (yes!)
+    * Mix of shared web infrastructure
+
+      * Load balancers, web frontends, backend services
+
+    * OpenStack controller node :)
     * Whenever we want to host something that needs to have high reliability
 
   .. revealjs:: How the OSL is using OpenStack
 
-    * Two clusters: OSL-internal x86 / Public POWER8 based
+    * Two clusters:
+
+      * OSL-internal x86
+      * Public POWER8 based
+
     * OSL-internal
 
       * Chef cookbook integration testing
       * Developer staging/development VMs
       * Multi-node testing
 
-    * POWER8
+    * POWER8 (soon POWER9)
 
-        * FOSS project ppc64/ppc64le porting efforts
-        * POWER8 software testing
+      * FOSS project ppc64/ppc64le porting efforts
+      * POWER8 software testing
 
   .. revealjs:: OpenStack / Ganeti side-by-side
 
+    .. rst-class:: fragment
+
     **OpenStack:**
 
-    * Pro: Great for quickly creating test vms for integration testing
+    .. rst-class:: fragment
+
+    * Pro: Great for quickly creating test vms for whatever needs you have
     * Con: Extremely complicated to setup and maintain
 
+    .. rst-class:: fragment
+
     **Ganeti:**
+
+    .. rst-class:: fragment
 
     * Pro: Extremely fault tolerant and stable VM hosting and easy to use/maintain
     * Con: Doesn't scale well for cloud-specific needs
 
-  .. revealjs:: Future plans
+  .. revealjs:: Our plans with both platforms
 
-    * Open up OpenStack cluster to our hosted projects later this year
-    * Continue using Ganeti along-side OpenStack
-    * Research using ManageIQ as an interface between both
+    * Open up our x86 OpenStack cluster to our hosted projects soon(TM)
+    * Continue using Ganeti along-side OpenStack for production services
     * Continue supporting both platforms long term
 
   .. revealjs:: Final Summary
 
     * Both fill a specific niche in the ecosystem
     * OpenStack will eventually mature and become more stable
-    * Give Ganeti a look, might be what you're looking for if OpenStack is too
-      complicated
-    * Make sure you experiment with both and fully understand their maintenence needs
+    * Give Ganeti a look, might be what you're looking for if OpenStack is too complicated
+    * Make sure you experiment with both and fully understand their maintenance needs
+    * And if you're able to, running both gives you the best of both worlds!
 
   .. revealjs:: Questions?
 
     * Lance Albertson
     * lance@osuosl.org
-    * @ramereth
+    * @ramereth @osuosl
+
+    References:
+
     * http://osuosl.org
     * http://www.ganeti.org/
-    * http://lancealbertson.com
+    * https://supermarket.chef.io/cookbooks/ganeti
+    * https://github.com/osuosl/ganeti-instance-image
 
     *Attribution-ShareAlike CC BY-SA ©2015-2017*

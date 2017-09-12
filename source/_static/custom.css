@@ -1,34 +1,16 @@
-div.figure p.caption {
-    position: relative;
+.reveal section img {
+    background: none;
+    border: none;
 }
 
-article.center-title > h2 {
-    position: relative;
-    align: center;
-    text-align: center;
+.reveal pre {
+    font-size: 0.4em;
 }
 
-table.citation {
-    font-size: 0.6em;
-    margin-top: 30px;
+.reveal h2 {
+    font-size: 1.2em;
 }
 
-img {
-    margin-top: 1em;
-}
-
-.codeblock-sm {
+.reveal ul {
     font-size: 0.8em;
-}
-
-.px20-text {
-    font-size: 20px;
-}
-
-.px22-text {
-    font-size: 22px;
-}
-
-pre {
-    margin-top: 10px;
 }
