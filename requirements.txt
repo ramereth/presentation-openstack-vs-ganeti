@@ -8,7 +8,7 @@ idna==2.6
 imagesize==0.7.1
 Jinja2==2.11.3
 MarkupSafe==1.0
-Pillow==8.2.0
+Pillow==8.3.2
 Pygments==2.7.4
 pytz==2017.2
 requests==2.20.0
